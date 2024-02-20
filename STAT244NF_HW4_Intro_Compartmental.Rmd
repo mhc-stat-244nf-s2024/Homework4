@@ -1,0 +1,118 @@
+---
+title: 'Homework 4: Introduction to Compartmental Modeling'
+subtitle: "STAT 244NF: Infectious Disease Modeling"
+author: "YOUR NAME HERE"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(ggplot2)
+```
+
+## Instructions:
+
+1. Please replace "YOUR NAME HERE" under author above with your name before you knit your final document for submission.
+2. All of your homework needs to be completed in this document, whether it requires R or just typed responses. As we incorporate more statistical computing into the course, it will be important that you are comfortable with R Markdown, so start now. Remember that R Markdown gives us a convenient framework for reproducible statistical reports because it contains a complete record of our analyses and conclusions.
+3. You may knit to PDF, HTML, or Word (click on the drop-down menu for Knit to choose the file output type). 
+4. Before submitting your work, please make sure the knitted file is well organized, legible, and looks the way you expect!
+5. Please include the names of any classmates with whom you worked on this homework, as well as any external resources that you might have used.
+6. This homework assignment is **due on Friday, March 1, 2024 and should be submitted to Gradescope**.
+
+- *Collaborators:*
+
+- *External resources:*
+
+## Compartmental Models
+
+**For each of the following exercises, you will need to consider the natural history of the described disease to choose an appropriate compartmental model and provide justification (1-2 sentences). Then you will simulate the disease process according to the compartmental model you identified using a for loop and the provided information about the population and disease transmission, and display the results of your simulation in a single plot for each disease. We will assume no births or deaths are relevant to these processes for now.**
+
+**Question 1: HIV**
+
+Once infected, those that are HIV-positive are infected and infectious for life. Assume no antiretroviral treatment (ART) for purposes of this question. Also assume that the population of interest consists of sexually-active adults with similar sexual behavior.
+
+**(a) What compartmental model setup do you think would be most appropriate? Provide 1-2 sentences of justification to earn full credit.**
+
+
+**(b) Using the information below, write a for loop to simulate this infection process using the model you specified in (a). For (b), we will assume that the rate of infection does depend on time.**
+
+In order to determine an appropriate value of $\lambda_{I(t)}$ for this model, I will be referring to the following [reference](https://stanfordhealthcare.org/medical-conditions/sexual-and-reproductive-health/hiv-aids/causes/risk-of-exposure.html). We will assume we are interested in a population of individuals engaging in unprotected anal sex, where all individuals are equally likely to engage in this behavior.
+
+For now, we will assume that the time scale is 1 week, and assume that individuals in this population have, on average, one exposure per week. Then, the parameter governing transition from $S \rightarrow I$ is a function of the probability of a susceptible individual contacting an infectious individual, AND conditional on that contact, becoming infectious themselves. In other words,
+
+$$
+\lambda_{I(t)}=P(S\rightarrow I \text{ at time t}|\text{contact with infectious person})P(\text{contact with infectious person}).
+$$
+A good approximation of $P(\text{contact with infectious person})$ is the proportion of infectious individuals at the previous time point, $\frac{I_{t-1}}{N}$.
+
+```{r}
+## Population size
+N <- 500
+
+## Initial number of susceptible individuals
+S0 <- 499
+
+## Initial number of infectious individuals
+I0 <- 1
+
+## P(S->I|contact)
+P_IGC <- 0.2
+
+## For now, assume P(contact) well approximated by 
+## the proportion of infected individuals at previous
+## time point.
+
+## Total number of time points
+t <- 52
+
+
+## Storage for simulation
+HIV_sim_df <- data.frame(Time = 0:t,
+                         S = rep(NA, t+1),
+                         I = rep(NA, t+1),
+                         lambdaI = rep(NA, t+1))
+
+HIV_sim_df$S[1] <- S0
+HIV_sim_df$I[1] <- I0
+HIV_sim_df$lambdaI[1] <- 0
+
+
+## Edit the for loop below to complete you simulation
+for (i in 2:(t+1)){
+  HIV_sim_df$lambdaI[i] #<- ADD appropriate info here
+  HIV_sim_df$S[i] #<- ADD appropriate info here
+  HIV_sim_df$I[i] #<- ADD appropriate info here
+}
+
+```
+
+
+**(c) Plot the results of your simulation (compartment versus time). For full credit, you should plot all the compartments in the same plot for full credit - the easiest way to do this is in ggplot2.**
+
+```{r}
+
+```
+
+
+**(d) Now, let's suppose we are considering a population with all of the same characteristics (e.g., size, initial values of susceptible and infected individuals, etc.), but now we are assuming individuals of interest are engaged in unprotected vaginal sex. According to the meta-analysis referenced in Part (b), the probability of infection given contact with an acutely infectious person under these circumstances is about 2%. Modify your code from Part (b) to simulate HIV transmission in this new population.**
+
+```{r}
+
+```
+
+
+**(e) Plot the results of your simulation (compartment versus time). For full credit, you should plot all the compartments in the same plot for full credit - the easiest way to do this is in ggplot2.**
+
+```{r}
+
+```
+
+**(f) Instead of considering two separate models for unprotected anal and vaginal sex for HIV transmission, suppose a colleague decides to model them together, and does not distinguish between the two exposure types. Do you think this is a good idea? Why or why not? You should consider the assumptions behind the compartmental model in your answer.**
+
+
+
+
